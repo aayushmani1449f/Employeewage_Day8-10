@@ -1,21 +1,27 @@
 package com.employeewage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EmpWageBuilder implements IComputeEmpWage {
     public static final int IS_PART_TIME = 1;
     public static final int IS_FULL_TIME = 2;
 
     private List<CompanyEmpWage> companyEmpWageList;
+    private Map<String, CompanyEmpWage> companyToEmpWageMap;
 
     public EmpWageBuilder() {
         companyEmpWageList = new ArrayList<>();
+        companyToEmpWageMap = new HashMap<>();
     }
 
     @Override
     public void addCompanyEmpWage(String company, int empRatePerHour, int numOfWorkingDays, int maxHoursPerMonth) {
-        companyEmpWageList.add(new CompanyEmpWage(company, empRatePerHour, numOfWorkingDays, maxHoursPerMonth));
+        CompanyEmpWage companyEmpWage = new CompanyEmpWage(company, empRatePerHour, numOfWorkingDays, maxHoursPerMonth);
+        companyEmpWageList.add(companyEmpWage);
+        companyToEmpWageMap.put(company, companyEmpWage);
     }
 
     @Override
@@ -24,6 +30,11 @@ public class EmpWageBuilder implements IComputeEmpWage {
             companyEmpWage.setTotalEmpWage(this.computeEmpWage(companyEmpWage));
             System.out.println(companyEmpWage);
         }
+    }
+
+    @Override
+    public int getTotalWage(String company) {
+        return companyToEmpWageMap.get(company).totalEmpWage;
     }
 
     private int computeEmpWage(CompanyEmpWage companyEmpWage) {
